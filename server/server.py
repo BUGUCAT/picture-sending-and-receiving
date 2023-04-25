@@ -1,25 +1,6 @@
-# -*- coding: utf-8 -*-
-# 功能：
-# 1.一台电脑/两台电脑间，客户端自动截屏后传输图像至服务器
-# 2.一台电脑/两台电脑间，客户端自动打开摄像头传输图像至服务器
-# 服务器程序
 import os
 import socket
 import socketserver, struct, gzip, time
-import PIL.ImageShow
-import numpy as np
-from PIL import ImageFile, Image
-from io import BytesIO
-import matplotlib.pyplot as plt
-import cv2
-import numpy
-
-
-# def save(imgBytes):
-#     imgIO = BytesIO(imgBytes)
-#     img = Image.open(imgIO)
-#     img = img.convert('YCbCr')  # 转换成YCbCr格式
-#     img.save('data/file.jpeg'.format(time.time()))  # 保存图片，注意图片会一直存储，要及时清理
 
 
 def handle(path):
@@ -72,11 +53,12 @@ class SERVER():
                 pics = handle(r'data\\receive\\' + fn)
 
                 # 向客户端发送分析处理后得到的五张图片
-                seq = 0     # 定义一个变量 seq 作为序号
+                seq = 0  # 定义一个变量 seq 作为序号
                 for pic_path in pics:
                     try:
                         seq += 1
-                        fhead = struct.pack(b'128sq', bytes(str(seq) + '_' + os.path.basename(pic_path), encoding='utf-8'),
+                        fhead = struct.pack(b'128sq',
+                                            bytes(str(seq) + '_' + os.path.basename(pic_path), encoding='utf-8'),
                                             os.stat(pic_path).st_size)  # 将xxx.jpg以128sq的格式打包
                         conn.send(fhead)
                         fp = open(pic_path, 'rb')  # 打开要传输的图片
